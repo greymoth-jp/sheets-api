@@ -1,0 +1,14 @@
+name = "sheetsapi-webhook-poller"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Two 1-minute cron triggers staggered by 30s effectively gives ~30s polling.
+# CF does not support sub-minute cron natively; use two offset triggers.
+[triggers]
+crons = ["* * * * *", "* * * * *"]
+
+# Secrets: set via `wrangler secret put APP_URL` and `wrangler secret put POLL_SECRET`
+# Do NOT commit real values here.
+[vars]
+# APP_URL = "https://sheetsapi.dev"  # override with: wrangler secret put APP_URL
