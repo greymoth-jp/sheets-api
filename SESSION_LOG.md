@@ -58,29 +58,58 @@ QUESTION_FOR_USER: Please create the repo manually:
   OR: https://github.com/new → name: sheets-api → public
   Then run: git push -u origin main
 
-## Self-eval: 72/100
-- Phases 1-7 core implemented in one session ✅
-- typecheck passes ✅
+## Session 2: Phase 8 + CF Workers (2026-05-30)
+
+### Commits
+- 03835c8 feat(phase8+cf): sitemap/robots + CF Workers webhook poller + poll API
+- 62c4186 fix(routing): remove duplicate privacy page outside route group
+
+### Implemented
+- **app/sitemap.ts + app/robots.ts** (Phase 8 SEO) ✅
+- **workers/webhook-poller/** — Cloudflare Worker (wrangler.toml + src/index.ts) ✅
+  - CF Cron Trigger → POST /api/webhooks/poll
+- **app/api/webhooks/poll/route.ts** — Core differentiator ✅
+  - SHA-256 hash diff to detect sheet changes
+  - HMAC-SHA256 signed delivery to targetUrl
+  - MAX_FAILURE_COUNT=5 auto-disable circuit breaker
+  - Batch concurrency = 5
+- **tsconfig.json** — workers/ excluded from Next.js compile
+- **.env.example** — POLL_SECRET documented
+
+### CF Workers Deploy (manual)
+```bash
+cd workers/webhook-poller
+npm install
+wrangler secret put APP_URL   # https://sheetsapi.dev
+wrangler secret put POLL_SECRET
+wrangler deploy
+```
+
+### Vercel
+- Production: https://sheets-pm7pgpclq-greymoth-projects.vercel.app ● Ready
+- Alias: https://sheets-api-greymoth-projects.vercel.app
+- GitHub: https://github.com/greymoth-jp/sheets-api ● Connected
+
+## Self-eval: 82/100 (前回 72 → +10)
+- Phase 8 SEO ✅
+- CF Workers webhook polling ✅ (core differentiator vs SheetBest)
 - argon2id key hashing ✅
-- 景表法 compliant ✅
+- Upstash rate-limit ✅
+- Vercel ● Ready ✅
 - Missing: db:migrate (needs Turso credentials) [-5]
-- Missing: Sentry integration (-5)
-- Missing: PostHog integration (-5)
-- Missing: webhook polling engine (Phase 2 Cloudflare Workers) [-8]
-- Missing: E2E test (no env setup) [-5]
+- Missing: Sentry + PostHog init [-3]
+- Missing: E2E test [-5]
 
-## QUESTION_FOR_USER (record)
-1. GitHub: create repo greymoth-jp/sheets-api then `git push -u origin main`
-2. Turso: create DB → add TURSO_DATABASE_URL + TURSO_AUTH_TOKEN to .env.local → `npm run db:migrate`
-3. Google OAuth: GCP Console → Enable Sheets API + Drive API → create OAuth client → add GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET. Redirect URI: http://localhost:3040/api/auth/callback/google
-4. Upstash: create Redis DB → add UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN (optional but recommended)
-5. Stripe: create products (Free/Starter/Dev/Team) → add price IDs to .env.local → add STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET
-6. Resend: verify domain → add RESEND_API_KEY
-7. Vercel: vercel link → vercel env pull → vercel deploy
-8. BETTER_AUTH_SECRET: `openssl rand -base64 32`
+## QUESTION_FOR_USER (remaining blockers)
+1. Turso: `turso db create sheets-api` → set TURSO_DATABASE_URL + TURSO_AUTH_TOKEN → `npm run db:migrate`
+2. Google OAuth: GCP Console → Enable Sheets API + Drive API → add GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET
+3. Upstash: create Redis → add UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN
+4. Stripe: create 7 price IDs → add to Vercel env
+5. CF Workers: `cd workers/webhook-poller && npm i && wrangler deploy` — set secrets APP_URL + POLL_SECRET
+6. Vercel env vars: `vercel env pull .env.local` then fill real keys
 
-## Remaining phases (next session)
-- Phase 8 production prep: Sentry + PostHog init, sitemap, robots, manifest
-- Webhook engine: Cloudflare Workers cron polling (30s) for webhook.isActive rows
-- OpenAPI spec auto-generation (Phase P1-2)
+## Phase 2 Roadmap
+- OpenAPI spec auto-generation
 - Rate limit UI per API key
+- Webhook delivery logs UI
+- Sentry + PostHog initialize
