@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────
+   SheetsAPI brand tokens
+   Dev-tool minimal: slate dark + electric blue accent
+   Dark-only. No light mode.
+   ───────────────────────────────────────────────────────── */
+
+:root {
+  /* surfaces */
+  --canvas:          #080a0f;
+  --surface-1:       #0d1117;
+  --surface-2:       #161b22;
+  --surface-3:       #1c2333;
+  --hairline:        #21262d;
+  --hairline-strong: #30363d;
+
+  /* ink */
+  --ink:             #f0f6fc;
+  --ink-muted:       #8b949e;
+  --ink-subtle:      #6e7681;
+  --ink-tertiary:    #484f58;
+
+  /* brand accents (electric blue — dev tool energy) */
+  --focus-primary:   #1f6feb;
+  --focus-glow:      #388bfd;
+  --focus-deep:      #0d2b5e;
+
+  /* semantic */
+  --success:         #3fb950;
+  --warning:         #d29922;
+  --danger:          #f85149;
+
+  /* fonts */
+  --font-sans:  'Inter', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  color-scheme: dark;
+}
+
+html, body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--focus-primary) 30%, transparent);
+  color: var(--ink);
+}
+
+.hairline {
+  border-color: var(--hairline);
+}
+
+/* Code/endpoint display */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
