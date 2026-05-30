@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -16,11 +16,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "SheetsAPI — Google Sheets as a REST API",
+    default: "SheetsAPI â€” Google Sheets as a REST API",
     template: "%s | SheetsAPI",
   },
   description:
-    "Turn any Google Sheet into a REST API in 60 seconds. Webhooks, caching, CORS, CRUD — everything SheetBest doesn't have.",
+    "Turn any Google Sheet into a REST API in 60 seconds. Webhooks, caching, CORS, CRUD â€” everything SheetBest doesn't have.",
   keywords: [
     "google sheets api",
     "sheetbest alternative",
@@ -38,6 +38,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+  },
+  other: {
+    'apple-itunes-app': 'app-id=PLACEHOLDER_APP_ID',
   },
 };
 
